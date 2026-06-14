@@ -37,26 +37,33 @@ pico_sdk_init()
 
 add_executable(Actron 
     main.cpp
-    tb6612.cpp
+    drivers/motor_driver/TB6612.cpp
     )
+
+pico_generate_pio_header(Actron ${CMAKE_CURRENT_LIST_DIR}/drivers/quadrature_encoder.pio)
 
 pico_set_program_name(Actron "Actron")
 pico_set_program_version(Actron "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(Actron 0)
-pico_enable_stdio_usb(Actron 0)
+pico_enable_stdio_usb(Actron 1)
 
 # Add the standard library to the build
 target_link_libraries(Actron
         pico_stdlib
         hardware_pwm
-        
+        hardware_adc
+        hardware_pio
     )
 
 # Add the standard include files to the build
 target_include_directories(Actron PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        drivers/motor_driver/
+        drivers/battery_manager/
+        modules/
+        math/
 )
 
 pico_add_extra_outputs(Actron)
