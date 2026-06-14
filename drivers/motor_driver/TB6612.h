@@ -24,7 +24,6 @@ struct TB6612Config {
 };
 
 class TB6612 {
-private:
     TB6612Config config_;
     uint slice_a_, slice_b_;
 public:

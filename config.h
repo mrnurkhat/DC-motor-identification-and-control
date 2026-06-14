@@ -38,4 +38,8 @@ namespace Config {
         constexpr float MIN_VOLTAGE = 6.0f;
         constexpr float MAX_VOLTAGE = 8.4f;
     }
+
+    namespace Motor {
+        constexpr float NOMINAL_VOLTAGE = 6.0f;
+    }
 }
