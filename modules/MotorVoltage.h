@@ -8,6 +8,7 @@ struct MotorVoltageConfig {
     float max_batt_v;
     float min_batt_v;
     float nom_mot_v;
+    float calibration_factor;
 };
 
 class MotorVoltage {
@@ -34,6 +35,7 @@ public:
     }
 
     void update() {
+        battery_.update();
         float batt_v = battery_.getVoltage();
 
         if (batt_v > config_.max_batt_v || batt_v < config_.min_batt_v) {
@@ -41,7 +43,7 @@ public:
             return;
         }
         
-        driver_.drive(TB6612Channel::A, channel_A_v_ / batt_v);
-        driver_.drive(TB6612Channel::B, channel_B_v_ / batt_v);
+        driver_.drive(TB6612Channel::A, channel_A_v_ / batt_v * config_.calibration_factor);
+        driver_.drive(TB6612Channel::B, channel_B_v_ / batt_v * config_.calibration_factor);
     }
 };

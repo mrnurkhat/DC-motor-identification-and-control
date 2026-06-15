@@ -32,7 +32,7 @@ namespace Config {
         constexpr float R102 = 47.0f;
         constexpr float REFERENCE_VOLTAGE = 3.3f;
         constexpr float ADC_MAX_WORD = 4095.0f;
-        constexpr float BATT_ALPHA = 0.4f;
+        constexpr float LPF_ALPHA = 0.1f;
         constexpr float CALIBRATION_FACTOR = 0.98778f;
         constexpr float WORD_TO_VOLTAGE_FACTOR = (REFERENCE_VOLTAGE / ADC_MAX_WORD * (R101 + R102) / R102 * CALIBRATION_FACTOR);
         constexpr float MIN_VOLTAGE = 6.0f;
@@ -41,5 +41,18 @@ namespace Config {
 
     namespace Motor {
         constexpr float NOMINAL_VOLTAGE = 6.0f;
+        constexpr float CALIBRATION_FACTOR = 1.06126f;
+    }
+
+    namespace Encoder {
+        namespace HW {
+            constexpr uint LEFT_ENCODER_FIRST_PIN = 0;
+            constexpr uint RIGHT_ENCODER_FIRST_PIN = 14;
+        }
+
+        constexpr uint LEFT_ENCODER_SM = 0;
+        constexpr bool LEFT_ENCODER_IVERTED = false;
+        constexpr float TICKS_PER_REVOLUITION = 937.2f;
+        constexpr float LPF_ALPHA = 0.4f;
     }
 }

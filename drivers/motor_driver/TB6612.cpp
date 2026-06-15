@@ -1,4 +1,4 @@
-#include "tb6612.h"
+#include "TB6612.h"
 #include "hardware/pwm.h"
 
 void TB6612::init() {

@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "hardware/pio.h"
 
 #include "TB6612.h"
 #include "Config.h"
 #include "Battery.h"
 #include "MotorVoltage.h"
+#include "Encoder.h"
+
 
 int main() {
     stdio_init_all();
@@ -31,7 +34,7 @@ int main() {
         .adc_pin = Config::BatteryManager::HW::ADC2,
         .adc_channel = Config::BatteryManager::HW::ADC_CHAN,
         .convert_factor = Config::BatteryManager::WORD_TO_VOLTAGE_FACTOR,
-        .alpha = Config::BatteryManager::BATT_ALPHA
+        .alpha = Config::BatteryManager::LPF_ALPHA
     };
 
     Battery batt(batt_config);
@@ -39,20 +42,34 @@ int main() {
     MotorVoltageConfig motor_config = {
         .max_batt_v = Config::BatteryManager::MAX_VOLTAGE,
         .min_batt_v = Config::BatteryManager::MIN_VOLTAGE,
-        .nom_mot_v = Config::Motor::NOMINAL_VOLTAGE
+        .nom_mot_v = Config::Motor::NOMINAL_VOLTAGE,
+        .calibration_factor = Config::Motor::CALIBRATION_FACTOR
     };
 
     MotorVoltage motor(driver, batt, motor_config);
 
     motor.init();
-    motor.setVoltage(TB6612Channel::A, 3.5f);
+    motor.setVoltage(TB6612Channel::A, 2.5f);
 
+    EncoderConfig left_enc_config = {
+        .ticks_per_rev = Config::Encoder::TICKS_PER_REVOLUITION,
+        .alpha = Config::Encoder::LPF_ALPHA,
+        .pio = pio0,
+        .sm = Config::Encoder::LEFT_ENCODER_SM,
+        .pin_ab = Config::Encoder::HW::LEFT_ENCODER_FIRST_PIN,
+        .inverted = Config::Encoder::LEFT_ENCODER_IVERTED
+    };
+
+    Encoder left_enc(left_enc_config);
+    left_enc.init();
+    
     gpio_init(25);
     gpio_set_dir(25, GPIO_OUT);
 
     while (true) {
         gpio_put(25, !gpio_get(25));
         motor.update();
-        sleep_ms(500);
+        printf(">rpm: %f\n", left_enc.getRPM(0.05));
+        sleep_ms(50);
     }
 }

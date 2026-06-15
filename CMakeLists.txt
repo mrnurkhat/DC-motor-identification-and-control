@@ -40,7 +40,7 @@ add_executable(Actron
     drivers/motor_driver/TB6612.cpp
     )
 
-pico_generate_pio_header(Actron ${CMAKE_CURRENT_LIST_DIR}/drivers/quadrature_encoder.pio)
+pico_generate_pio_header(Actron ${CMAKE_CURRENT_LIST_DIR}/drivers/encoder/quadrature_encoder.pio)
 
 pico_set_program_name(Actron "Actron")
 pico_set_program_version(Actron "0.1")
@@ -62,6 +62,7 @@ target_include_directories(Actron PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         drivers/motor_driver/
         drivers/battery_manager/
+        drivers/encoder/
         modules/
         math/
 )
