@@ -18,6 +18,9 @@ class Encoder {
     EncoderConfig config_;
     int prev_count_ = 0;
     LowPass filter_;
+
+    float rpm_ = 0.0f;
+    float pos_ = 0.0f;
 public:
     Encoder(const EncoderConfig &config) : config_(config) {
         filter_.setAlpha(config_.alpha);
@@ -32,14 +35,18 @@ public:
         prev_count_ = quadrature_encoder_get_count(config_.pio, config_.sm);
     }
 
-    float getRPM(float dt) {
+    void update(float dt) {
         int curr_count = quadrature_encoder_get_count(config_.pio, config_.sm);
+
         float rpm = (curr_count - prev_count_) / dt / config_.ticks_per_rev * 60.0f;
         prev_count_ = curr_count;
+        rpm_ = filter_.update(rpm);
+        if (config_.inverted) rpm_ = -rpm_;
 
-        rpm = filter_.update(rpm);
-        if (config_.inverted) rpm = -rpm;
-        
-        return rpm;
+        float pos = (prev_count_ / config_.ticks_per_rev) * 360.0f;
+        pos_ = (config_.inverted) ? -pos : pos;
     }
+
+    float getRPM() const { return rpm_; }
+    float getPositionDeg() const { return pos_; }
 };

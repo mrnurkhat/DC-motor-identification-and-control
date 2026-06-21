@@ -17,6 +17,7 @@ class MotorVoltage {
     MotorVoltageConfig config_;
     float channel_A_v_ = 0.0f;
     float channel_B_v_ = 0.0f;
+    float batt_v_ = 0.0f;
 public:
     MotorVoltage(TB6612 &driver, Battery &battery, const MotorVoltageConfig config) 
         : driver_(driver), battery_(battery), config_(config) {}
@@ -36,14 +37,16 @@ public:
 
     void update() {
         battery_.update();
-        float batt_v = battery_.getVoltage();
+        batt_v_ = battery_.getVoltage();
 
-        if (batt_v > config_.max_batt_v || batt_v < config_.min_batt_v) {
+        if (batt_v_ > config_.max_batt_v || batt_v_ < config_.min_batt_v) {
             driver_.drive(TB6612Channel::Both, 0.0f);
             return;
         }
         
-        driver_.drive(TB6612Channel::A, channel_A_v_ / batt_v * config_.calibration_factor);
-        driver_.drive(TB6612Channel::B, channel_B_v_ / batt_v * config_.calibration_factor);
+        driver_.drive(TB6612Channel::A, channel_A_v_ / batt_v_ * config_.calibration_factor);
+        driver_.drive(TB6612Channel::B, channel_B_v_ / batt_v_ * config_.calibration_factor);
     }
+
+    float getBattCharge() const { return batt_v_; }
 };

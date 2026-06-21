@@ -53,6 +53,6 @@ namespace Config {
         constexpr uint LEFT_ENCODER_SM = 0;
         constexpr bool LEFT_ENCODER_IVERTED = false;
         constexpr float TICKS_PER_REVOLUITION = 937.2f;
-        constexpr float LPF_ALPHA = 0.4f;
+        constexpr float LPF_ALPHA = 0.2f;
     }
 }

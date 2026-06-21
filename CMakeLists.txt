@@ -55,6 +55,7 @@ target_link_libraries(Actron
         hardware_pwm
         hardware_adc
         hardware_pio
+        pico_multicore
     )
 
 # Add the standard include files to the build
